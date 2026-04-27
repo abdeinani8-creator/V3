@@ -1,4 +1,5 @@
 const { ActivityType } = require('discord.js');
+const { startScheduler } = require('../services/schedulerService');
 const logger = require('../utils/logger');
 
 const STATUSES = [
@@ -14,6 +15,7 @@ module.exports = {
   execute(client) {
     logger.info(`Logged in as ${client.user.tag}`);
     logger.info(`Serving ${client.guilds.cache.size} guild(s)`);
+    client.guilds.cache.forEach(g => logger.info(`  → Guild: ${g.name} (${g.id})`));
 
     let i = 0;
     const rotate = () => {
@@ -23,5 +25,8 @@ module.exports = {
 
     rotate();
     setInterval(rotate, 30_000);
+
+    // Start daily news scheduler
+    startScheduler(client);
   },
 };
