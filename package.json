@@ -1,0 +1,31 @@
+{
+  "name": "discord-ai-bot",
+  "version": "1.0.0",
+  "description": "Production-ready Discord bot with AI, voice, XP, and moderation features",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "deploy": "node src/utils/deploy-commands.js"
+  },
+  "keywords": ["discord", "bot", "ai", "voice", "claude"],
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "@discordjs/opus": "^0.9.0",
+    "@discordjs/voice": "^0.17.0",
+    "discord.js": "^14.14.0",
+    "dotenv": "^16.4.5",
+    "ffmpeg-static": "^5.2.0",
+    "libsodium-wrappers": "^0.7.13",
+    "openai": "^4.40.0",
+    "play-dl": "^1.9.7",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
