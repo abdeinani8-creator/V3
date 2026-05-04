@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git push *)",
+      "Bash(node -e ' *)",
+      "Bash(npm install *)",
+      "Bash(mkdir -p src/commands/music)",
+      "Bash(timeout 7 node index.js)"
+    ]
+  }
+}

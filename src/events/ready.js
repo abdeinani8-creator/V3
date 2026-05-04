@@ -1,6 +1,7 @@
 const { ActivityType } = require('discord.js');
 const { startScheduler } = require('../services/schedulerService');
-const logger = require('../utils/logger');
+const spotify = require('../services/spotifyService');
+const logger  = require('../utils/logger');
 
 const STATUSES = [
   { name: '/ask | AI-Powered',       type: ActivityType.Watching  },
@@ -28,5 +29,8 @@ module.exports = {
 
     // Start daily news scheduler
     startScheduler(client);
+
+    // Init Spotify (if credentials are set)
+    spotify.init();
   },
 };

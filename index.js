@@ -19,6 +19,9 @@ if (!process.env.CLIENT_ID) {
   process.exit(1);
 }
 
+// Prevent false memory-leak warnings from discord.js WebSocket internals
+require('events').EventEmitter.defaultMaxListeners = 20;
+
 // ── Create client ─────────────────────────────────────────────
 const client = new Client({
   intents: [

@@ -28,10 +28,13 @@ module.exports = {
     }
 
     if (query.includes('spotify.com')) {
-      return interaction.reply({
-        content: '⚠️ Spotify links require extra credentials.\nTip: paste the **song name** instead and I\'ll find it on YouTube!',
-        ephemeral: true,
-      });
+      const { isAvailable } = require('../../services/spotifyService');
+      if (!isAvailable()) {
+        return interaction.reply({
+          content: '⚠️ Spotify support is not configured yet.\nAsk an admin to add `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` to the bot settings.',
+          ephemeral: true,
+        });
+      }
     }
 
     await interaction.deferReply();

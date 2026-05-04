@@ -7,6 +7,8 @@ module.exports = {
   async execute(interaction, client) {
     if (!interaction.isChatInputCommand()) return;
 
+    logger.info(`Command received: /${interaction.commandName} from ${interaction.user.tag} in ${interaction.guild?.name}`);
+
     const command = client.commands.get(interaction.commandName);
     if (!command) {
       logger.warn(`Unknown command: ${interaction.commandName}`);

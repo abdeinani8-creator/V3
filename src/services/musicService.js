@@ -7,7 +7,8 @@ const {
   joinVoiceChannel,
   NoSubscriberBehavior,
 } = require('@discordjs/voice');
-const play   = require('play-dl');
+const play    = require('play-dl');
+const spotify = require('./spotifyService');
 const { EmbedBuilder } = require('discord.js');
 const logger = require('../utils/logger');
 
@@ -178,9 +179,29 @@ async function resolveQuery(query) {
     }
   } catch {}
 
-  // Spotify — extract title and search YouTube
+  // Spotify — resolve via Spotify API then search YouTube for each track
   if (query.includes('spotify.com')) {
-    return null; // handled in play command with friendly message
+    if (!spotify.isAvailable()) return null; // no credentials set
+
+    const spTracks = await spotify.resolve(query);
+    if (!spTracks || spTracks.length === 0) return null;
+
+    const songs = [];
+    for (const sp of spTracks) {
+      const searchTerm = `${sp.title} ${sp.artist}`;
+      try {
+        const results = await play.search(searchTerm, { source: { youtube: 'video' }, limit: 1 });
+        if (results.length) {
+          songs.push({
+            title:     `${sp.title} — ${sp.artist}`,
+            url:       results[0].url,
+            duration:  results[0].durationRaw,
+            thumbnail: sp.image ?? results[0].thumbnails?.[0]?.url,
+          });
+        }
+      } catch { /* skip unresolvable tracks */ }
+    }
+    return songs.length ? songs : null;
   }
 
   // Generic URL — try direct stream
