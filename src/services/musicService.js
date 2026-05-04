@@ -111,13 +111,13 @@ class GuildQueue {
     this.current  = song;
 
     try {
-      // Get a direct streamable URL via yt-dlp (bypasses YouTube bot detection)
-      const audioUrl = await ytDlp(song.url, {
-        format:      'bestaudio',
-        getUrl:      true,
-        noPlaylist:  true,
+      // Pipe audio directly from yt-dlp — bypasses YouTube bot detection reliably
+      const proc = ytDlp.exec(song.url, {
+        format:     'bestaudio/bestaudio',
+        output:     '-',
+        noPlaylist: true,
       });
-      const resource = createAudioResource(audioUrl, { inputType: StreamType.Arbitrary });
+      const resource = createAudioResource(proc.stdout, { inputType: StreamType.Arbitrary });
       this.player.play(resource);
       this.textChannel?.send({ embeds: [nowPlayingEmbed(song)] }).catch(() => {});
     } catch (err) {
