@@ -27,20 +27,18 @@ module.exports = {
       return interaction.reply({ content: "❌ I don't have **Connect/Speak** permissions in that channel!", ephemeral: true });
     }
 
-    if (query.includes('spotify.com')) {
-      const { isAvailable } = require('../../services/spotifyService');
-      if (!isAvailable()) {
-        return interaction.reply({
-          content: '⚠️ Spotify support is not configured yet.\nAsk an admin to add `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` to the bot settings.',
-          ephemeral: true,
-        });
-      }
-    }
 
     await interaction.deferReply();
 
     try {
       const songs = await resolveQuery(query);
+
+      if (songs?.error === 'spotify_playlist') {
+        return interaction.editReply(
+          '⚠️ Spotify **playlists/albums** are not supported without extra setup.\n' +
+          'Share individual **track links** instead — e.g. `https://open.spotify.com/track/...`'
+        );
+      }
 
       if (!songs || songs.length === 0) {
         return interaction.editReply('❌ No results found. Try a different search term or URL.');

@@ -179,21 +179,21 @@ async function resolveQuery(query) {
     }
   } catch {}
 
-  // Spotify — resolve via Spotify API then search YouTube for each track
+  // Spotify — get title/artist via song.link, then search YouTube
   if (query.includes('spotify.com')) {
-    if (!spotify.isAvailable()) return null; // no credentials set
+    const spResult = await spotify.resolve(query);
 
-    const spTracks = await spotify.resolve(query);
-    if (!spTracks || spTracks.length === 0) return null;
+    if (!spResult) return null;
+    if (spResult.error === 'playlist') return { error: 'spotify_playlist' };
 
     const songs = [];
-    for (const sp of spTracks) {
-      const searchTerm = `${sp.title} ${sp.artist}`;
+    for (const sp of spResult) {
+      const searchTerm = `${sp.title} ${sp.artist}`.trim();
       try {
         const results = await play.search(searchTerm, { source: { youtube: 'video' }, limit: 1 });
         if (results.length) {
           songs.push({
-            title:     `${sp.title} — ${sp.artist}`,
+            title:     `${sp.title}${sp.artist ? ` — ${sp.artist}` : ''}`,
             url:       results[0].url,
             duration:  results[0].durationRaw,
             thumbnail: sp.image ?? results[0].thumbnails?.[0]?.url,
