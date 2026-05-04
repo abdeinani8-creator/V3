@@ -8,8 +8,10 @@ const {
   NoSubscriberBehavior,
 } = require('@discordjs/voice');
 const play    = require('play-dl');
+const ytDlp   = require('yt-dlp-exec');
 const spotify = require('./spotifyService');
 const { EmbedBuilder } = require('discord.js');
+const { StreamType } = require('@discordjs/voice');
 const logger = require('../utils/logger');
 
 const queues      = new Map();   // guildId -> GuildQueue
@@ -109,8 +111,13 @@ class GuildQueue {
     this.current  = song;
 
     try {
-      const source   = await play.stream(song.url, { quality: 2 });
-      const resource = createAudioResource(source.stream, { inputType: source.type });
+      // Get a direct streamable URL via yt-dlp (bypasses YouTube bot detection)
+      const audioUrl = await ytDlp(song.url, {
+        format:      'bestaudio',
+        getUrl:      true,
+        noPlaylist:  true,
+      });
+      const resource = createAudioResource(audioUrl, { inputType: StreamType.Arbitrary });
       this.player.play(resource);
       this.textChannel?.send({ embeds: [nowPlayingEmbed(song)] }).catch(() => {});
     } catch (err) {

@@ -19,6 +19,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",
     "@discordjs/voice": "^0.19.2",
+    "@distube/ytdl-core": "^4.16.12",
     "@google/generative-ai": "^0.24.1",
     "discord.js": "^14.14.0",
     "dotenv": "^16.4.5",
@@ -31,7 +32,8 @@
     "play-dl": "^1.9.7",
     "rss-parser": "^3.13.0",
     "spotify-web-api-node": "^5.0.2",
-    "winston": "^3.13.0"
+    "winston": "^3.13.0",
+    "yt-dlp-exec": "^1.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
